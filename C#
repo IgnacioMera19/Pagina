@@ -26,12 +26,12 @@ class Carrito
 
     public void MostrarCarrito()
     {
-        Console.WriteLine("\n--- CARRITO ---");
+        Console.WriteLine("--- CARRITO ---");
         foreach (var item in Items)
         {
             Console.WriteLine($"{item.juego.Nombre}: ${item.juego.Precio} x {item.cantidad}");
         }
-        Console.WriteLine($"Total: ${CalcularTotal()}\n");
+        Console.WriteLine($"Total: ${CalcularTotal()}");
     }
 }
 
