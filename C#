@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Videojuego
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public decimal Precio { get; set; }
+    public int Stock { get; set; }
+}
+
+class Carrito
+{
+    public List<(Videojuego juego, int cantidad)> Items { get; set; } = new();
+
+    public void AgregarJuego(Videojuego juego, int cantidad)
+    {
+        Items.Add((juego, cantidad));
+    }
+
+    public decimal CalcularTotal()
+    {
+        return Items.Sum(item => item.juego.Precio * item.cantidad);
+    }
+
+    public void MostrarCarrito()
+    {
+        Console.WriteLine("\n--- CARRITO ---");
+        foreach (var item in Items)
+        {
+            Console.WriteLine($"{item.juego.Nombre}: ${item.juego.Precio} x {item.cantidad}");
+        }
+        Console.WriteLine($"Total: ${CalcularTotal()}\n");
+    }
+}
+
+class Tienda
+{
+    private List<Videojuego> catalogo;
+    private Carrito carrito;
+
+    public Tienda()
+    {
+        catalogo = new List<Videojuego>
+        {
+            new() { Id = 1, Nombre = "Batman Arkham Knight", Precio = 29.99m, Stock = 10 },
+            new() { Id = 2, Nombre = "Detroit become Human", Precio = 35.99m, Stock = 5 },
+            new() { Id = 3, Nombre = "Mortal Kombat X", Precio = 19.99m, Stock = 8 }
+        };
+        carrito = new Carrito();
+    }
+
+    public void MostrarCatalogo()
+    {
+        Console.WriteLine("\n--- CATÁLOGO ---");
+        foreach (var juego in catalogo)
+        {
+            Console.WriteLine($"{juego.Id}. {juego.Nombre} - ${juego.Precio} (Stock: {juego.Stock})");
+        }
+    }
+
+    public void ComprarJuego(int id, int cantidad)
+    {
+        var juego = catalogo.FirstOrDefault(j => j.Id == id);
+        if (juego == null || cantidad > juego.Stock)
+        {
+            Console.WriteLine("Error: Juego no encontrado o stock insuficiente.");
+            return;
+        }
+        juego.Stock -= cantidad;
+        carrito.AgregarJuego(juego, cantidad);
+        Console.WriteLine($"{cantidad}x {juego.Nombre} agregado al carrito.");
+    }
+
+    public void Pagar()
+    {
+        carrito.MostrarCarrito();
+        Console.WriteLine("¡Compra realizada exitosamente!");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Tienda tienda = new();
+        tienda.MostrarCatalogo();
+        tienda.ComprarJuego(1, 2);
+        tienda.ComprarJuego(2, 1);
+        tienda.Pagar();
+    }
+}
